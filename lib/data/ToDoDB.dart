@@ -17,6 +17,7 @@ class Tododb {
   }
 
   Future<void> loadData() async {
+    //123
     final prefs = await SharedPreferences.getInstance();
     String? jsonString = prefs.getString('toDoList');
     if (jsonString != null) {

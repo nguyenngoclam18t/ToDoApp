@@ -1,22 +1,32 @@
+import 'dart:convert';
+
 import 'package:hive/hive.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Tododb {
   List toDoList = [];
-  //final _mybox = Hive.box("ToDoList");
-  // void createInitData() {
-  //   toDoList = [
-  //     ["Make tutorial", false],
-  //     ["Do exercice", true],
-  //     ["sleep", false],
-  //     ["eat", false]
-  //   ];
-  // }
 
-  // void loadData() {
-  //   toDoList = _mybox.get("TODOLST");
-  // }
-  //
-  // void saveData() {
-  //   _mybox.put("TODOLST", toDoList);
-  // }
+  Future<void> createInitData() async {
+    toDoList = [
+      ["Make tutorial", false],
+      ["Do exercice", true],
+      ["sleep", false],
+      ["eat", false]
+    ];
+    await saveData();
+  }
+
+  Future<void> loadData() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? jsonString = prefs.getString('toDoList');
+    if (jsonString != null) {
+      toDoList = jsonDecode(jsonString);
+    }
+  }
+
+  Future<void> saveData() async {
+    final prefs = await SharedPreferences.getInstance();
+    String jsonString = jsonEncode(toDoList);
+    await prefs.setString('toDoList', jsonString);
+  }
 }

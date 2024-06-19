@@ -13,22 +13,25 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Tododb tododb = Tododb();
-  // final _mybox = Hive.openBox("ToDoList");
   final _controller = new TextEditingController();
   @override
   void initState() {
-    // if (_mybox1.get("TODOLST") == null) {
-    //   tododb.createInitData();
-    // } else {
-    //   tododb.loadData();
-    // }
     super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    await tododb.loadData();
+    if (tododb.toDoList.isEmpty) {
+      await tododb.createInitData();
+    }
+    setState(() {});
   }
 
   void checkboxChanged(bool? value, int index) {
     setState(() {
       tododb.toDoList[index][1] = !tododb.toDoList[index][1]!;
-      //tododb.saveData();
+      tododb.saveData();
     });
   }
 
@@ -48,7 +51,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       tododb.toDoList.add([_controller.text, false]);
       _controller.clear();
-      //tododb.saveData();
+      tododb.saveData();
     });
     Navigator.of(context).pop();
   }
@@ -56,7 +59,7 @@ class _HomePageState extends State<HomePage> {
   void deleteTask(int index) {
     setState(() {
       tododb.toDoList.removeAt(index);
-      //tododb.saveData();
+      tododb.saveData();
     });
   }
 
